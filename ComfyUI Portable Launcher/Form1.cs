@@ -15,6 +15,26 @@ namespace ComfyUI_Portable_Launcher
         {
             InitializeComponent();
         }
+        private bool HasNvidiaGpu()
+        {
+            try
+            {
+                using var key = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}");
+                if (key != null)
+                {
+                    foreach (var subkeyName in key.GetSubKeyNames())
+                    {
+                        using var subkey = key.OpenSubKey(subkeyName);
+                        string provider = subkey?.GetValue("ProviderName")?.ToString() ?? "";
+                        string desc = subkey?.GetValue("DriverDesc")?.ToString() ?? "";
+                        if (provider.Contains("NVIDIA") || desc.Contains("NVIDIA"))
+                            return true;
+                    }
+                }
+            }
+            catch { /* Fallback to assuming false if WMI fails */ }
+            return false;
+        }
         private void CleanupComfyProcess(int pid)
         {
             AppendToTerminal("[Shutting down Python env]");
@@ -33,14 +53,17 @@ namespace ComfyUI_Portable_Launcher
         }
         private void RunComfyUI()
         {
-            string appDirectory = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
-            string batPath = Path.Combine(appDirectory, "run_nvidia_gpu.bat");
+            string comfyArgs = "";
 
-            if (!File.Exists(batPath))
+            string appDirectory = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
+            string pythonExe = Path.Combine(appDirectory, "python_embeded", "python.exe");
+            string mainPy = Path.Combine(appDirectory, "ComfyUI", "main.py");
+
+            if (!File.Exists(mainPy))
             {
                 MessageBox.Show(
-                    "ERROR: The file 'run_nvidia_gpu.bat' not found in this location!\n\n" +
-                    "Please copy this EXE into your ComfyUI portable folder and try again.\n"+
+                    "ERROR: The ComfyUI embedded venv not found in this location!\n\n" +
+                    "Please copy this EXE into your ComfyUI_windows_portable folder and try again.\n"+
                     "This EXE should be placed next to 'run_nvidia_gpu.bat'.",
                     "Wrong launch directory",
                     MessageBoxButtons.OK,
@@ -50,10 +73,23 @@ namespace ComfyUI_Portable_Launcher
                 return;
             }
 
+            if (HasNvidiaGpu())
+            {
+                comfyArgs = $"-s \"{mainPy}\" --windows-standalone-build --disable-auto-launch";
+            }
+            else
+            {
+                comfyArgs = $"-s \"{mainPy}\" --cpu --windows-standalone-build --disable-auto-launch";
+            }
+
+            AppendToTerminal("Starting ComfyUI Portable");
+            AppendToTerminal("python_embedded\\python.exe "+comfyArgs);
+
             ProcessStartInfo startInfo = new ProcessStartInfo
             {
-                FileName = batPath,
-                WorkingDirectory = appDirectory,
+                FileName = pythonExe,
+                Arguments = comfyArgs,
+                WorkingDirectory = Path.Combine(appDirectory, "ComfyUI"),
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
                 UseShellExecute = false,

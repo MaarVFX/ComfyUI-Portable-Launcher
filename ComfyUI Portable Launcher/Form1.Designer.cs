@@ -70,7 +70,7 @@ namespace ComfyUI_Portable_Launcher
             this.Controls.Add(this.ComfyViewer);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "ComfyForm";
-            this.Text = "ComfyUI Portable Launcher";
+            this.Text = "ComfyUI Portable";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ComfyForm_FormClosing);
             this.Load += new System.EventHandler(this.ComfyForm_Load);
