@@ -32,6 +32,7 @@ namespace ComfyUI_Portable_Launcher
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ComfyForm));
             this.ComfyViewer = new Microsoft.Web.WebView2.WinForms.WebView2();
             this.ComfyTerminal = new System.Windows.Forms.TextBox();
+            this.ComfySave = new System.Windows.Forms.SaveFileDialog();
             ((System.ComponentModel.ISupportInitialize)(this.ComfyViewer)).BeginInit();
             this.SuspendLayout();
             // 
@@ -60,6 +61,11 @@ namespace ComfyUI_Portable_Launcher
             this.ComfyTerminal.Size = new System.Drawing.Size(771, 420);
             this.ComfyTerminal.TabIndex = 1;
             // 
+            // ComfySave
+            // 
+            this.ComfySave.Filter = "PNG Image|*.png|JPEG Image|*.jpg|All Files|*.*";
+            this.ComfySave.Title = "Save ComfyUI Output";
+            // 
             // ComfyForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -84,6 +90,7 @@ namespace ComfyUI_Portable_Launcher
 
         private Microsoft.Web.WebView2.WinForms.WebView2 ComfyViewer;
         private System.Windows.Forms.TextBox ComfyTerminal;
+        private System.Windows.Forms.SaveFileDialog ComfySave;
     }
 }
 

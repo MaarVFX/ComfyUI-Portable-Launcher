@@ -10,6 +10,8 @@ namespace ComfyUI_Portable_Launcher
     public partial class ComfyForm : Form
     {
         private Process comfyProcess;
+        private string lastUsedPath = string.Empty;
+        private string defaultSavePath = string.Empty;
 
         public ComfyForm()
         {
@@ -58,7 +60,7 @@ namespace ComfyUI_Portable_Launcher
             string appDirectory = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
             string pythonExe = Path.Combine(appDirectory, "python_embeded", "python.exe");
             string mainPy = Path.Combine(appDirectory, "ComfyUI", "main.py");
-
+            
             if (!File.Exists(mainPy))
             {
                 MessageBox.Show(
@@ -81,6 +83,8 @@ namespace ComfyUI_Portable_Launcher
             {
                 comfyArgs = $"-s \"{mainPy}\" --cpu --windows-standalone-build --disable-auto-launch";
             }
+
+            defaultSavePath = Path.Combine(appDirectory, "ComfyUI", "output");
 
             AppendToTerminal("Starting ComfyUI Portable");
             AppendToTerminal("python_embedded\\python.exe "+comfyArgs);
@@ -123,10 +127,37 @@ namespace ComfyUI_Portable_Launcher
             ComfyViewer.CoreWebView2.Navigate("http://127.0.0.1:8188");
             ComfyTerminal.Visible = false;
         }
+        private void CoreWebView2_DownloadStarting(object sender, CoreWebView2DownloadStartingEventArgs e)
+        {
+            string rawName = Path.GetFileName(e.ResultFilePath);
+            string cleanName = rawName.Replace("_temp_", "_");
+            ComfySave.FileName = cleanName.Replace("_.", ".");
+
+            if (!string.IsNullOrEmpty(lastUsedPath))
+            {
+                ComfySave.InitialDirectory = lastUsedPath;
+            }
+            else
+            {
+                ComfySave.InitialDirectory = defaultSavePath;
+            }
+
+            if (ComfySave.ShowDialog() == DialogResult.OK)
+            {
+                e.ResultFilePath = ComfySave.FileName;
+                defaultSavePath = Path.GetDirectoryName(ComfySave.FileName);
+            }
+            else
+            {
+                e.Handled = true;
+            }
+        }
         private async void ComfyForm_Load(object sender, EventArgs e)
         {
             var env = await CoreWebView2Environment.CreateAsync(null, Path.Combine(Path.GetTempPath(), "ComfyBrowserCache"));
             await ComfyViewer.EnsureCoreWebView2Async(env);
+            ComfyViewer.CoreWebView2.DownloadStarting += CoreWebView2_DownloadStarting;
+
             RunComfyUI();
         } 
         private void ComfyForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -140,5 +171,6 @@ namespace ComfyUI_Portable_Launcher
                 CleanupComfyProcess(comfyProcess.Id);
             }
         }
+
     }
 }
