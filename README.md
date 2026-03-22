@@ -29,8 +29,15 @@ I'm not planning on developing it much further, I made it to help me organize my
 
 ## ⚠️ Troubleshooting
 
-* SmartScreen Warning: Since this is a specialized tool, Windows may flag it as "Unknown." Click More Info -> Run Anyway.
-* Path Error: Ensure the launcher is in the same folder as _run_nvidia_gpu.bat_. It uses relative paths to keep your setup portable.
+* SmartScreen Warning: Since this is a specialized tool, Windows may flag it as "Unknown." Click **More Info -> Run Anyway**.
+* Path Error: Ensure the launcher is in the same folder as _run_nvidia_gpu.bat_. It uses relative paths to keep your setup portable. If it's placed in an incorrect folder, an error message will show.
+* Network error: If the UI doesn't start and boot log indicates a network error, two things might have happened:
+  - Another instance of ComfyUI is already running. Since any instance uses the same address and port (`127.0.0.1:8818`), they cannot run in parallel.
+  - There's a chance the Launcher didn't close correctly and there's a residual Python process that blocks ComfyUI port. Run CMD and try 
+`netstat -ano | findstr :8188`. If you see somthing like this:  
+`TCP    127.0.0.1:8188     0.0.0.0.0            LISTENING          24880`   
+it means that's what happened. The last number is the PID of the residual Python process.   
+You can kill this process with command `taskkill /F /PID <PID>`, replacing `<PID>` with that number. After that your ComfyUI should run like normal. 
 
 
 ---
