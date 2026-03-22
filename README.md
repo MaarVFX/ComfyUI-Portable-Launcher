@@ -17,7 +17,7 @@ I'm not planning on developing it much further, I made it to help me organize my
 ## 🛠️ Installation & Usage
 
    1. Grab the latest **ComfyUI_Launcher.exe** from the [Releases page](https://github.com/MaarVFX/ComfyUI-Portable_Launcher/releases/tag/v1.0.0).
-   2. Copy the .exe into your root _ComfyUI_windows_portable_ folder (the one containing run_nvidia_gpu.bat).
+   2. Copy the .exe into your root _ComfyUI_windows_portable_ folder (the one containing _run_nvidia_gpu.bat_).
    3. Add the argument  `--disable-auto-launch` at the end of the line that launches ComfyUI in _run_nvidia_gpu.bat_ to prevent it from opening additional browser window. The line will look like this: `.\python_embeded\python.exe -s ComfyUI\main.py --windows-standalone-build --disable-auto-launch`
    4. Run: Double-click the launcher.
    * The internal terminal will show the loading progress.
