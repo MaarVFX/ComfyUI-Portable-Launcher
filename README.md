@@ -3,7 +3,7 @@ A lightweight, open-source, single-window "Quality of Life" launcher for [ComfyU
 
 The Portable setup launches external terminal open the UI in a separate browser window. 
 This launcher unifies everything into one clean interface. No additional menus or toolbars, your ComfyUI Portable takes all the space it needs, much like the desktop version.
-If you're like me and you want your ComfyUI Portable separate from your browser and without terminal, this little app might help.
+If you're like me and you want your ComfyUI Portable separate from your browser and without a CMD window, this little app might help.
 
 I'm not planning on developing it much further, I made it to help me organize my workspace, but if you have any suggestions how to streamline the worklow further, I might take a look.
 
