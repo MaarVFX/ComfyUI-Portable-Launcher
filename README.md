@@ -1,10 +1,8 @@
 # ComfyUI Portable Launcher 🚀
 A lightweight, open-source, single-window "Quality of Life" launcher for [ComfyUI Windows Portable](https://github.com/Comfy-Org/ComfyUI).
 
-The Portable setup launches external terminal and opens the UI in a separate browser window. 
-This launcher unifies everything into one clean interface. No additional menus or toolbars, your ComfyUI Portable takes all the space it needs, much like the desktop version.
-
-If you're like me and you want your ComfyUI Portable work like the Desktop App, this little app might help.
+The Launcher makes your ComfyUI Windows Portable look and feel like the desktop version. 
+No additional menus or toolbars, your ComfyUI Portable takes all the space it needs, and with no separate CMD window.
 
 I'm not planning on developing it much further, I made it to help me organize my workspace, but if you have any suggestions how to streamline the worklow further, I might take a look.
 
