@@ -2,6 +2,7 @@
 using System.IO;
 using System.Diagnostics;
 using System.Windows.Forms;
+using System.Text.RegularExpressions;
 using Microsoft.Web.WebView2.Core;
 
 
@@ -36,6 +37,43 @@ namespace ComfyUI_Portable_Launcher
             }
             catch { /* Fallback to assuming false if WMI fails */ }
             return false;
+        }
+        private int GetProcessID(int port)
+        {
+            int pid = -1;
+            try
+            {
+                ProcessStartInfo startInfo = new ProcessStartInfo
+                {
+                    FileName = "netstat.exe",
+                    Arguments = "-ano",
+                    RedirectStandardOutput = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+
+                using (Process process = Process.Start(startInfo))
+                {
+                    using (System.IO.StreamReader reader = process.StandardOutput)
+                    {
+                        string output = reader.ReadToEnd();
+
+                        // Pattern looks for :PORT followed by the connection state and then the PID
+                        string pattern = $":{port}\\s+.*\\s+(?<pid>\\d+)";
+                        Match match = Regex.Match(output, pattern);
+
+                        if (match.Success)
+                        {
+                            pid = int.Parse(match.Groups["pid"].Value);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+            return pid;
         }
         private void CleanupComfyProcess(int pid)
         {
@@ -157,8 +195,18 @@ namespace ComfyUI_Portable_Launcher
             var env = await CoreWebView2Environment.CreateAsync(null, Path.Combine(Path.GetTempPath(), "ComfyBrowserCache"));
             await ComfyViewer.EnsureCoreWebView2Async(env);
             ComfyViewer.CoreWebView2.DownloadStarting += CoreWebView2_DownloadStarting;
+            int targetPort = 8188;
+            int pid = GetProcessID(targetPort);
 
-            RunComfyUI();
+            if (pid != -1)
+            {
+                AppendToTerminal("Cleaning up residual Comfyui process...");
+                CleanupComfyProcess(pid);
+            }
+            else
+            {
+                RunComfyUI();
+            }            
         } 
         private void ComfyForm_FormClosing(object sender, FormClosingEventArgs e)
         {

@@ -9,10 +9,9 @@
     <Authors>MaarVFX</Authors>
     <Description>A simple launcher for ComfyUI portable. Place it in your ComfyUI_windows_portable folder.</Description>
     <PackageId>ComfyUI Portable Launcher</PackageId>
-    <AssemblyVersion>1.0.1.0</AssemblyVersion>
-    <FileVersion>1.0.1.0</FileVersion>
-    <PackageReleaseNotes>Nvidia GPU detection added. 
-Bat files bypassed</PackageReleaseNotes>
+    <AssemblyVersion>1.0.1.5</AssemblyVersion>
+    <FileVersion>1.0.1.5</FileVersion>
+    <PackageReleaseNotes>Fixed bug, killing the residue process fixed</PackageReleaseNotes>
     <Version>1.0.1</Version>
   </PropertyGroup>
 
